@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import AppLayout from '@/components/AppLayout';
+import { useEffect, useRef, useState } from 'react';
+import { getCorrectId } from '@/utils/metrics';
 
 const agents = [
   {
@@ -66,7 +68,70 @@ const agents = [
 ];
 
 export default function Agents() {
+  const frameRef = useRef<number>();
+  const metricsWorker = useRef<Worker>();
+  const [systemMetrics, setSystemMetrics] = useState({
+    memory: {
+      used: 0,
+      total: (performance as any).memory?.jsHeapSizeLimit || 0,
+      peak: 0
+    },
+    performance: {
+      fps: 60,
+      loadTime: performance.now(),
+      interactions: 0
+    },
+    network: {
+      type: (navigator as any).connection?.effectiveType || 'unknown',
+      downlink: (navigator as any).connection?.downlink || 0,
+      rtt: (navigator as any).connection?.rtt || 0
+    },
+    errors: {
+      count: 0,
+      lastError: null as Error | null,
+      errorTypes: new Map<string, number>()
+    }
+  });
+
   useEffect(() => {
+    const updateMetrics = () => {
+      setSystemMetrics(prev => ({
+        ...prev,
+        memory: {
+          used: (performance as any).memory?.usedJSHeapSize || 0,
+          total: (performance as any).memory?.jsHeapSizeLimit || 0,
+          peak: Math.max(prev.memory.peak, (performance as any).memory?.usedJSHeapSize || 0)
+        },
+        performance: {
+          ...prev.performance,
+          fps: Math.round(60 - (getCorrectId() * 10)),
+          interactions: prev.performance.interactions
+        }
+      }));
+      frameRef.current = requestAnimationFrame(updateMetrics);
+    };
+
+    frameRef.current = requestAnimationFrame(updateMetrics);
+
+    const handleError = (error: Error) => {
+      setSystemMetrics(prev => {
+        const errorTypes = new Map(prev.errors.errorTypes);
+        const count = errorTypes.get(error.name) || 0;
+        errorTypes.set(error.name, count + 1);
+        
+        return {
+          ...prev,
+          errors: {
+            count: prev.errors.count + 1,
+            lastError: error,
+            errorTypes
+          }
+        };
+      });
+    };
+
+    window.addEventListener('error', handleError);
+
     return () => {
       if (frameRef.current) {
         cancelAnimationFrame(frameRef.current);
@@ -74,8 +139,10 @@ export default function Agents() {
       if (metricsWorker.current) {
         metricsWorker.current.terminate();
       }
+      window.removeEventListener('error', handleError);
     };
   }, []);
+
   return (
     <AppLayout>
       <div className="min-h-screen p-8">

@@ -75,21 +75,47 @@ export default function Terminal({ messages, isSimulating, onProgress, sessionId
     resolve: () => void;
   } | null>(null);
   const hasInitialized = useRef<boolean>(false);
+  const frameRef = useRef<number>();
+  const metricsWorker = useRef<Worker>();
+  
+  // Enhanced system metrics with error tracking
   const [systemMetrics, setSystemMetrics] = useState<SystemMetrics>({
-    cpu: { usage: 0, temperature: 0, cores: navigator.hardwareConcurrency },
-    memory: { used: 0, total: 0, peak: 0 },
-    network: { latency: 0, bandwidth: 0, packets: 0 },
-    gpu: { usage: 0, memory: 0, temperature: 0 },
-    storage: { read: 0, write: 0, iops: 0 }
-  });
-  const [diagnostics, setDiagnostics] = useState({
-    websocketHealth: 100,
-    apiResponseTime: 0,
-    renderingFPS: 0,
-    errorRate: 0,
-    uptime: 0,
-    activeThreads: 0,
-    pendingTasks: 0
+    cpu: { 
+      usage: 0, 
+      temperature: 0, 
+      cores: navigator.hardwareConcurrency,
+      throttling: false
+    },
+    memory: { 
+      used: 0, 
+      total: 0, 
+      peak: 0,
+      leaks: [] 
+    },
+    network: { 
+      latency: 0, 
+      bandwidth: 0, 
+      packets: 0,
+      errors: 0
+    },
+    gpu: { 
+      usage: 0, 
+      memory: 0, 
+      temperature: 0,
+      driver: navigator.userAgent.includes('AMD') ? 'AMD' : 
+              navigator.userAgent.includes('NVIDIA') ? 'NVIDIA' : 'Generic'
+    },
+    storage: { 
+      read: 0, 
+      write: 0, 
+      iops: 0,
+      errorRate: 0
+    },
+    errors: {
+      count: 0,
+      lastError: null,
+      errorTypes: new Map()
+    }
   });
 
   useEffect(() => {

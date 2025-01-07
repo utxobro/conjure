@@ -66,6 +66,16 @@ const agents = [
 ];
 
 export default function Agents() {
+  useEffect(() => {
+    return () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+      }
+      if (metricsWorker.current) {
+        metricsWorker.current.terminate();
+      }
+    };
+  }, []);
   return (
     <AppLayout>
       <div className="min-h-screen p-8">

@@ -22,4 +22,17 @@ export interface GameFile extends Page {
 export interface GameProject {
   structure: GameFile[];
   currentFile: string;
+}
+
+export interface SolanaProgram extends Page {
+  code: string;
+  type: 'program' | 'module';
+  children?: SolanaProgram[];
+}
+
+export interface ProgramChange {
+  name: string;
+  code: string;
+  action: 'create' | 'update' | 'delete';
+  reason?: string;
 } 

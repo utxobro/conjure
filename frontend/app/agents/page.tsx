@@ -63,8 +63,37 @@ const agents = [
     },
     "gradient": "from-purple-500 via-pink-500 to-red-500",
     "href": "/gamedev"
+  },
+  {
+    "id": "solana-sage",
+    "name": "Nikolai 'CodeGuru' Ivanov",
+    "image": "/blockchain_dev.png",
+    "role": "Solana Blockchain Engineer",
+    "version": "2.1.0",
+    "description": "A specialized blockchain developer focused on creating secure and efficient Solana programs. Expert in Rust and blockchain architecture, delivering high-performance dApps and smart contracts.",
+    "strengths": [
+      "Rust programming mastery",
+      "Solana program architecture",
+      "Cross-program invocations (CPIs)",
+      "Token program integration"
+    ],
+    "weaknesses": [
+      "Limited front-end expertise",
+      "Complex UI interactions"
+    ],
+    "skills": [
+      { "name": "Rust", "level": 98 },
+      { "name": "Solana", "level": 96 },
+      { "name": "Security", "level": 95 },
+      { "name": "Performance", "level": 94 }
+    ],
+    "stats": {
+      "programs": "150+",
+      "audits": "99.9%"
+    },
+    "gradient": "from-purple-500 via-blue-500 to-cyan-500",
+    "href": "/solanaagent"
   }
-  
 ];
 
 export default function Agents() {

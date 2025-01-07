@@ -1,7 +1,7 @@
 <div align="center">
   <img src="frontend/public/conjure_logo.png" alt="ConjureAI Logo" width="200"/>
 
-  # ConjureAI - AI-Powered Development Platform
+  # ConjureAI - AI Developer Agent Platform
 
   [![Next.js](https://img.shields.io/badge/Next.js-14.0-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -47,13 +47,17 @@
 1. Clone the repository:
 
 # Install backend dependencies
+```console
 npm install
+```
 
 # Install frontend dependencies
+```console
 cd frontend
 npm install
+```
 
-3. Set up environment variables:
+2. Set up environment variables:
 
 # Backend (.env)
 OPENAI_API_KEY=your_api_key
@@ -62,14 +66,18 @@ PORT=3001
 # Frontend (.env.local)
 NEXT_PUBLIC_API_URL=http://localhost:3001
 
-4. Run the development servers:
+3. Run the development servers:
 
 # Backend
+```console  
 npm run dev
+```
 
 # Frontend (in a new terminal)
+```console
 cd frontend
 npm run dev
+```
 
 ## AI Agents
 
